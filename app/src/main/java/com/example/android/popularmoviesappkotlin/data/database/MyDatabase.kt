@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
 @Database(entities = [], version = 1)
 abstract class MyDatabase: RoomDatabase() {
 
-    abstract val myDao: MyDao
+    abstract val movieDao: MovieDao
 
     companion object {
 
