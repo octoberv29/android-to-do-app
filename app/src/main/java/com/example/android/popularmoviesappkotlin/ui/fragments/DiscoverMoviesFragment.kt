@@ -50,7 +50,7 @@ class DiscoverMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerViewMovies.layoutManager = GridLayoutManager(activity, NUMBER_OF_COLUMNS)
         recyclerViewMovies.setHasFixedSize(true)
-        mMovieAdapter = MovieAdapter(null, this)
+        mMovieAdapter = MovieAdapter(this)
         recyclerViewMovies.adapter = mMovieAdapter
     }
 
@@ -65,7 +65,7 @@ class DiscoverMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
                 if (movieResponse != null) {
                     val movies = movieResponse.movies
                     if (movies != null && movies.isNotEmpty()) {
-                        mMovieAdapter.swapData(movies)
+                        mMovieAdapter.movies = movies
                     }
                 }
             })

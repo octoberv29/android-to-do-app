@@ -33,7 +33,7 @@ class FavouriteMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         recyclerViewMovies.layoutManager = GridLayoutManager(activity, NUMBER_OF_COLUMNS)
         recyclerViewMovies.setHasFixedSize(true)
-        mFavourtieMovieAdapter = MovieAdapter(null, this)
+        mFavourtieMovieAdapter = MovieAdapter(this)
         recyclerViewMovies.adapter = mFavourtieMovieAdapter
     }
 
@@ -43,7 +43,7 @@ class FavouriteMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
         viewModel = ViewModelProvider(this).get(FavouriteMoviesViewModel::class.java)
         viewModel.getAllFavouriteMovies().observe(viewLifecycleOwner, Observer<List<Movie>> { movies ->
                 if (movies != null && movies.isNotEmpty()) {
-                    mFavourtieMovieAdapter.swapData(movies)
+                    mFavourtieMovieAdapter.movies = movies
                 }
             })
     }

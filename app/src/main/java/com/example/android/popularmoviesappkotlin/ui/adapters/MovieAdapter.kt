@@ -1,6 +1,5 @@
 package com.example.android.popularmoviesappkotlin.ui.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,52 +11,44 @@ import com.example.android.popularmoviesappkotlin.utils.Constants
 import kotlinx.android.synthetic.main.movie_item.view.*
 import java.lang.String
 
-class MovieAdapter(
-        private var movies: List<Movie>?,
-        private var listener: OnMovieClickListener
-    ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
+class MovieAdapter(private val listener: OnMovieClickListener) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
 
-    private lateinit var context: Context;
+    var movies = listOf<Movie>()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     interface OnMovieClickListener {
         fun onClick(movieId: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val itemView = LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.movie_item, parent, false)
-        context = parent.context // ?????
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val itemView = layoutInflater.inflate(R.layout.movie_item, parent, false)
         return MovieViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
-        val movie: Movie = movies!![position]
-        holder.bind(movie)
+        val movie: Movie = movies[position]
+        holder.bind(movie, listener)
     }
 
     override fun getItemCount(): Int {
-        return if (movies != null) movies!!.size else 0
+        return movies.size
     }
 
-    fun swapData(movies: List<Movie>?) {
-        this.movies = movies
-        notifyDataSetChanged()
-    }
+    class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-
-        fun bind(movie: Movie) {
-            Glide.with(context).load(Constants.IMAGE_URL + movie.posterPath).into(itemView.ivThumbnail)
+        fun bind(movie: Movie, listener: OnMovieClickListener) {
+            Glide.with(itemView.context)
+                .load(Constants.IMAGE_URL + movie.posterPath)
+                .into(itemView.ivThumbnail)
             itemView.tvOriginalTitle.text = movie.originalTitle
             itemView.tvVoteAverage.text = String.valueOf(movie.voteAverage)
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(v: View) {
-            val position = adapterPosition
-            val movieId = movies?.get(position)?.id
-            listener.onClick(movieId!!)
+            itemView.setOnClickListener {
+                listener.onClick(movie.id!!)
+            }
         }
     }
 }
