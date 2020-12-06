@@ -9,9 +9,6 @@ import com.example.android.popularmoviesappkotlin.data.models.Movie
 import com.example.android.popularmoviesappkotlin.data.models.MovieResponse
 import com.example.android.popularmoviesappkotlin.data.network.MovieApiService
 import com.example.android.popularmoviesappkotlin.data.network.MovieRetrofit
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,7 +24,7 @@ class Repository private constructor(application: Application) {
         @Volatile
         private var INSTANCE: Repository? = null
 
-        fun getInstance(application: Application): Repository? {
+        fun getInstance(application: Application): Repository {
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
@@ -88,37 +85,23 @@ class Repository private constructor(application: Application) {
         return mAllFavouriteMovies
     }
 
-    fun checkIfFavouriteMovieExistInDb(movieId: Int): Boolean {
-        var check: Boolean = false
-        CoroutineScope(IO).launch {
-            check = mMovieDao.exists(movieId)
-        }
-        return check
+    suspend fun checkIfFavouriteMovieExistInDb(movieId: Int): Boolean {
+        return mMovieDao.exists(movieId)
     }
 
-    fun getFavouriteMovieById(movieId: Int): Movie? {
-        var movie: Movie? = null
-        CoroutineScope(IO).launch {
-            movie = mMovieDao.getById(movieId)
-        }
-        return movie
+    suspend fun getFavouriteMovieById(movieId: Int): Movie? {
+        return mMovieDao.getById(movieId)
     }
 
-    fun insertFavouriteMovie(movieToInsert: Movie) {
-        CoroutineScope(IO).launch {
-            mMovieDao.insert(movieToInsert)
-        }
+    suspend fun insertFavouriteMovie(movieToInsert: Movie) {
+        mMovieDao.insert(movieToInsert)
     }
 
-    fun deleteFavouriteMovieById(idToDelete: Int) {
-        CoroutineScope(IO).launch {
-            mMovieDao.deleteById(idToDelete)
-        }
+    suspend fun deleteFavouriteMovieById(idToDelete: Int) {
+        mMovieDao.deleteById(idToDelete)
     }
 
-    fun deleteAllFavouriteMovies() {
-        CoroutineScope(IO).launch {
-            mMovieDao.deleteAll()
-        }
+    suspend fun deleteAllFavouriteMovies() {
+        mMovieDao.deleteAll()
     }
 }
