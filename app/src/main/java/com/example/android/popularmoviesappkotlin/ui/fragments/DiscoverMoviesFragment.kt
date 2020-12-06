@@ -72,7 +72,7 @@ class DiscoverMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
     }
 
     // for MovieAdapter.OnMovieClickListener
-    override fun onClick(movieId: Int?) {
+    override fun onClick(movieId: Int) {
         val intent = Intent(activity, DetailsActivity::class.java)
         intent.putExtra(INTENT_EXTRA_MOVIE_ID, movieId)
         startActivity(intent)

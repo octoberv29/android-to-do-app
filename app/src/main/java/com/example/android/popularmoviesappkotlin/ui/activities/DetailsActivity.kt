@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_details_content.view.*
 
 
 class DetailsActivity : AppCompatActivity() {
-    private var movieId: Long = 0
+    private var movieId: Int = 0
 
     private lateinit var viewModel: MovieDetailsViewModel
 
@@ -33,8 +33,9 @@ class DetailsActivity : AppCompatActivity() {
         val intent = intent
         if (intent.hasExtra(INTENT_EXTRA_MOVIE_ID)) {
 
-            movieId = intent.getLongExtra(INTENT_EXTRA_MOVIE_ID, -1)
-            if (movieId == -1L) {
+            movieId = intent.getIntExtra(INTENT_EXTRA_MOVIE_ID, -1)
+
+            if (movieId == -1) {
                 Toast.makeText(this, "Sorry, error has occurred!", Toast.LENGTH_SHORT).show()
                 onBackPressed()
             }
@@ -78,10 +79,17 @@ class DetailsActivity : AppCompatActivity() {
                 viewModel.getMovieDetailsObservable().observe(this, Observer<Movie> { movie ->
                         if (movie != null) {
                             val favouriteViewModel: FavouriteMoviesViewModel =
-                                ViewModelProvider(this@DetailsActivity).get(
-                                    FavouriteMoviesViewModel::class.java
-                                )
-                            favouriteViewModel.insertFavouriteMovie(movie)
+                                ViewModelProvider(this@DetailsActivity)
+                                    .get(FavouriteMoviesViewModel::class.java)
+
+                            // TODO: fix unlike in the future
+                            if (!favouriteViewModel.checkIfFavouriteMovieExistInDb(movie.id!!)) {
+                                println("HERE: doesn't exist")
+                                favouriteViewModel.insertFavouriteMovie(movie)
+                            } else {
+                                println("HERE: exists")
+                                favouriteViewModel.deleteFavouriteMovieById(movie.id)
+                            }
                         }
                     })
                 true

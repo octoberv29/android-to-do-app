@@ -21,6 +21,11 @@ class FavouriteMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
     private lateinit var mFavourtieMovieAdapter: MovieAdapter
     private lateinit var viewModel: FavouriteMoviesViewModel
 
+    companion object {
+        private const val NUMBER_OF_COLUMNS = 3
+        const val INTENT_EXTRA_MOVIE_ID = "MOVIE_ID"
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_movies_list, container, false)
     }
@@ -44,14 +49,9 @@ class FavouriteMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
     }
 
     // for MovieAdapter.OnMovieClickListener
-    override fun onClick(movieId: Int?) {
+    override fun onClick(movieId: Int) {
         val intent = Intent(activity, DetailsActivity::class.java)
         intent.putExtra(INTENT_EXTRA_MOVIE_ID, movieId)
         startActivity(intent)
-    }
-
-    companion object {
-        private const val NUMBER_OF_COLUMNS = 3
-        const val INTENT_EXTRA_MOVIE_ID = "MOVIE_ID"
     }
 }

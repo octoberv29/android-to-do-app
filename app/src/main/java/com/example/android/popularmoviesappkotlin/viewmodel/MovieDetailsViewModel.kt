@@ -9,7 +9,7 @@ import com.example.android.popularmoviesappkotlin.data.Repository
 import com.example.android.popularmoviesappkotlin.data.models.Movie
 
 
-class MovieDetailsViewModel(application: Application, movieId: Long) : AndroidViewModel(application) {
+class MovieDetailsViewModel(application: Application, movieId: Int) : AndroidViewModel(application) {
 
     private val repository: Repository
     private val movieDetailsObservable: LiveData<Movie>
@@ -23,7 +23,7 @@ class MovieDetailsViewModel(application: Application, movieId: Long) : AndroidVi
         return movieDetailsObservable
     }
 
-    class MovieDetailsViewModelFactory(private val application: Application, private val id: Long) :
+    class MovieDetailsViewModelFactory(private val application: Application, private val id: Int) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             return MovieDetailsViewModel(application, id) as T

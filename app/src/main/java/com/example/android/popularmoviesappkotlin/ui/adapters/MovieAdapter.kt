@@ -20,7 +20,7 @@ class MovieAdapter(
     private lateinit var context: Context;
 
     interface OnMovieClickListener {
-        fun onClick(movieId: Int?)
+        fun onClick(movieId: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
@@ -56,8 +56,8 @@ class MovieAdapter(
 
         override fun onClick(v: View) {
             val position = adapterPosition
-            val movieId: Int? = movies!![position].id
-            listener.onClick(movieId)
+            val movieId = movies?.get(position)?.id
+            listener.onClick(movieId!!)
         }
     }
 }

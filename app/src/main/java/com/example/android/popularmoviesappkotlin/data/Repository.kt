@@ -45,6 +45,7 @@ class Repository private constructor(application: Application) {
 
         // for Room
         mMovieDao = MovieDatabase.getInstance(application).movieDao()
+        // this should be inside suspend
         mAllFavouriteMovies = mMovieDao.getAll()
     }
 
@@ -65,7 +66,7 @@ class Repository private constructor(application: Application) {
         return data
     }
 
-    fun getMovieDetails(id: Long): LiveData<Movie> {
+    fun getMovieDetails(id: Int): LiveData<Movie> {
         val data: MutableLiveData<Movie> = MutableLiveData<Movie>()
 
         retrofitService.getMovieDetails(id).enqueue(object: Callback<Movie> {
@@ -85,6 +86,22 @@ class Repository private constructor(application: Application) {
     // for Room
     fun getAllFavouriteMovies(): LiveData<List<Movie>> {
         return mAllFavouriteMovies
+    }
+
+    fun checkIfFavouriteMovieExistInDb(movieId: Int): Boolean {
+        var check: Boolean = false
+        CoroutineScope(IO).launch {
+            check = mMovieDao.exists(movieId)
+        }
+        return check
+    }
+
+    fun getFavouriteMovieById(movieId: Int): Movie? {
+        var movie: Movie? = null
+        CoroutineScope(IO).launch {
+            movie = mMovieDao.getById(movieId)
+        }
+        return movie
     }
 
     fun insertFavouriteMovie(movieToInsert: Movie) {

@@ -12,8 +12,11 @@ interface MovieDao {
     @Insert
     suspend fun insert(movie: Movie)
 
-    @Query("SELECT * FROM movie_table WHERE id ==:id")
-    suspend fun getById(id: Long): Movie?
+    @Query("SELECT * FROM movie_table WHERE id ==:movieId")
+    suspend fun getById(movieId: Int): Movie?
+
+    @Query("SELECT EXISTS (SELECT 1 FROM movie_table WHERE id = :movieId)")
+    suspend fun exists(movieId: Int): Boolean
 
     @Query("SELECT * FROM movie_table")
     fun getAll(): LiveData<List<Movie>>

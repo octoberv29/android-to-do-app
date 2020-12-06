@@ -21,12 +21,20 @@ class FavouriteMoviesViewModel(application: Application) : AndroidViewModel(appl
         return allFavouriteMovies
     }
 
+    fun checkIfFavouriteMovieExistInDb(movieId: Int): Boolean {
+        return repository.checkIfFavouriteMovieExistInDb(movieId)
+    }
+
+    fun getFavouriteMovieById(movieId: Int): Movie? {
+        return repository.getFavouriteMovieById(movieId)
+    }
+
     fun insertFavouriteMovie(movie: Movie) {
         repository.insertFavouriteMovie(movie)
     }
 
-    fun deleteFavouriteMovieById(id: Int) {
-        repository.deleteFavouriteMovieById(id)
+    fun deleteFavouriteMovieById(movieId: Int) {
+        repository.deleteFavouriteMovieById(movieId)
     }
 
     fun deleteAllFavouriteMovies() {

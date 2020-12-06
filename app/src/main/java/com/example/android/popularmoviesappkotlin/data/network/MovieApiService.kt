@@ -21,6 +21,6 @@ interface MovieApiService {
 
     @GET("movie/{movie_id}")
     fun getMovieDetails(
-        @Path("movie_id") id: Long
+        @Path("movie_id") id: Int
     ): Call<Movie>
 }
