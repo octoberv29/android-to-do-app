@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -58,9 +59,9 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.2.0'
 
     // Room
-    def room_version = "2.2.5"
-    implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
+    implementation 'androidx.room:room-runtime:2.2.5'
+    implementation 'androidx.room:room-ktx:2.2.5'
+    kapt 'androidx.room:room-compiler:2.2.5'
 
     // Retrofit2 + Okhttp3
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

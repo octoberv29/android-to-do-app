@@ -8,9 +8,9 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
+    card_view:cardBackgroundColor="@color/cardview_dark_background"
     card_view:cardCornerRadius="2dp"
-    card_view:cardElevation="2dp"
-    card_view:cardBackgroundColor="@color/cardview_dark_background">
+    card_view:cardElevation="2dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,7 +51,5 @@
             tools:text="7.5" />
 
     </LinearLayout>
-
-
 
 </androidx.cardview.widget.CardView>

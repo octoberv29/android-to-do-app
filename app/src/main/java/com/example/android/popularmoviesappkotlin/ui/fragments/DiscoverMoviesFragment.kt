@@ -43,13 +43,8 @@ class DiscoverMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
         sortBy = if (arguments != null) arguments!!.getString("sortBy", "") else "popularity.desc"
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return View.inflate(activity, R.layout.fragment_movies_list, container)
-
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_movies_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

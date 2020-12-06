@@ -34,14 +34,14 @@ class MainActivity : AppCompatActivity() {
     private fun replaceByDiscoverMoviesFragment(sortBy: String) {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragment_container, DiscoverMoviesFragment.newInstance(sortBy))
+            .replace(R.id.fragmentContainer, DiscoverMoviesFragment.newInstance(sortBy))
             .commit()
     }
 
     private fun replaceByFavouriteMoviesFragment() {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragment_container, FavouriteMoviesFragment())
+            .replace(R.id.fragmentContainer, FavouriteMoviesFragment())
             .commit()
     }
 

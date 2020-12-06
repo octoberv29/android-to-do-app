@@ -21,12 +21,8 @@ class FavouriteMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
     private lateinit var mFavourtieMovieAdapter: MovieAdapter
     private lateinit var viewModel: FavouriteMoviesViewModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return View.inflate(activity, R.layout.fragment_movies_list, container)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_movies_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

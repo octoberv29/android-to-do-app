@@ -58,7 +58,7 @@ class Repository private constructor(application: Application) {
             }
 
             override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                TODO("Not yet implemented")
+                //
             }
 
         })
@@ -74,7 +74,7 @@ class Repository private constructor(application: Application) {
             }
 
             override fun onFailure(call: Call<Movie>, t: Throwable) {
-                TODO("Not yet implemented")
+                //
             }
 
         })
