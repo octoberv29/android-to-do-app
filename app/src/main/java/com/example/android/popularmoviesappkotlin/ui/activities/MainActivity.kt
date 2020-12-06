@@ -5,10 +5,12 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.example.android.popularmoviesappkotlin.R
+import com.example.android.popularmoviesappkotlin.ui.fragments.DiscoverMoviesFragment
+import com.example.android.popularmoviesappkotlin.ui.fragments.FavouriteMoviesFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?): Boolean {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 

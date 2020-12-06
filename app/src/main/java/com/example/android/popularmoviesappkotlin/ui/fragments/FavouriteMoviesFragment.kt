@@ -18,8 +18,8 @@ import kotlinx.android.synthetic.main.fragment_movies_list.*
 
 class FavouriteMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
 
-    private var mFavourtieMovieAdapter: MovieAdapter? = null
-    private var viewModel: FavouriteMoviesViewModel? = null
+    private lateinit var mFavourtieMovieAdapter: MovieAdapter
+    private lateinit var viewModel: FavouriteMoviesViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,24 +40,18 @@ class FavouriteMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
         super.onActivityCreated(savedInstanceState)
         // this way ViewModel will be destroyed when Fragment is finished
         viewModel = ViewModelProvider(this).get(FavouriteMoviesViewModel::class.java)
-        viewModel.getAllFavouriteMovies().observe(this,
-            Observer<List<Movie>> { movies ->
+        viewModel.getAllFavouriteMovies().observe(viewLifecycleOwner, Observer<List<Movie>> { movies ->
                 if (movies != null && movies.isNotEmpty()) {
-                    mFavourtieMovieAdapter?.swapData(movies)
+                    mFavourtieMovieAdapter.swapData(movies)
                 }
             })
     }
 
     // for MovieAdapter.OnMovieClickListener
-    override fun onClick(movieId: Long) {
+    override fun onClick(movieId: Int?) {
         val intent = Intent(activity, DetailsActivity::class.java)
         intent.putExtra(INTENT_EXTRA_MOVIE_ID, movieId)
         startActivity(intent)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.clearCompositeDisposable()
     }
 
     companion object {

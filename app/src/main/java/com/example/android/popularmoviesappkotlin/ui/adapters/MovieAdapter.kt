@@ -20,7 +20,7 @@ class MovieAdapter(
     private lateinit var context: Context;
 
     interface OnMovieClickListener {
-        fun onClick(movieId: Long)
+        fun onClick(movieId: Int?)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
@@ -48,15 +48,15 @@ class MovieAdapter(
     inner class MovieViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
 
         fun bind(movie: Movie) {
-            Glide.with(context).load(Constants.IMAGE_URL + movie.getPosterPath()).into(itemView.ivThumbnail)
-            itemView.tvOriginalTitle.setText(movie.getOriginalTitle())
-            itemView.tvVoteAverage.setText(String.valueOf(movie.getVoteAverage()))
+            Glide.with(context).load(Constants.IMAGE_URL + movie.posterPath).into(itemView.ivThumbnail)
+            itemView.tvOriginalTitle.text = movie.originalTitle
+            itemView.tvVoteAverage.text = String.valueOf(movie.voteAverage)
             itemView.setOnClickListener(this)
         }
 
         override fun onClick(v: View) {
             val position = adapterPosition
-            val movieId: Long = movies!![position].getId()
+            val movieId: Int? = movies!![position].id
             listener.onClick(movieId)
         }
     }

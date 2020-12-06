@@ -2,15 +2,36 @@ package com.example.android.popularmoviesappkotlin.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.LiveData
+import com.example.android.popularmoviesappkotlin.data.Repository
+import com.example.android.popularmoviesappkotlin.data.models.Movie
+
 
 class FavouriteMoviesViewModel(application: Application) : AndroidViewModel(application) {
 
-    class MovieViewModelFactory: ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            TODO("Not yet implemented")
-        }
+    private val repository: Repository
+    private val allFavouriteMovies: LiveData<List<Movie>>
 
+    init {
+        repository = Repository(application)
+        allFavouriteMovies = repository.getAllFavouriteMovies()
     }
+
+    fun getAllFavouriteMovies(): LiveData<List<Movie>> {
+        return allFavouriteMovies
+    }
+
+    fun insertFavouriteMovie(movie: Movie?) {
+        repository.insertFavouriteMovie(movie)
+    }
+
+    fun deleteFavouriteMovieById(id: Int) {
+        repository.deleteFavouriteMovieById(id)
+    }
+
+    fun deleteAllFavouriteMovies() {
+        repository.deleteAllFavouriteMovies()
+    }
+
+
 }
