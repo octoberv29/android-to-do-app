@@ -1,26 +1,28 @@
 package com.example.android.popularmoviesappkotlin.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.example.android.popularmoviesappkotlin.data.Repository
 import com.example.android.popularmoviesappkotlin.data.models.Movie
+import kotlinx.coroutines.launch
 
 
 class MovieDetailsViewModel(application: Application, movieId: Int) : AndroidViewModel(application) {
 
-    private val repository: Repository
-    private val movieDetailsObservable: LiveData<Movie>
+    private val repository: Repository = Repository.getInstance(application)
+
+    private val _movieDetails = MutableLiveData<Movie>()
+    val movieDetails: LiveData<Movie>
+        get() = _movieDetails
 
     init {
-        repository = Repository.getInstance(application)!!
-        movieDetailsObservable = repository.getMovieDetails(movieId)
+        getMovieDetails(movieId)
     }
 
-    fun getMovieDetailsObservable(): LiveData<Movie> {
-        return movieDetailsObservable
+    private fun getMovieDetails(movieId: Int) {
+        viewModelScope.launch {
+            _movieDetails.value = repository.getMovieDetails(movieId)
+        }
     }
 
     class MovieDetailsViewModelFactory(private val application: Application, private val id: Int) :

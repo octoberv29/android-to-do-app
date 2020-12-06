@@ -45,7 +45,7 @@ class DetailsActivity : AppCompatActivity() {
                 MovieDetailsViewModelFactory(this.application, movieId)
             ).get(MovieDetailsViewModel::class.java)
 
-            viewModel.getMovieDetailsObservable().observe(this,
+            viewModel.movieDetails.observe(this,
                 Observer<Movie> { movie ->
                     if (movie != null) {
                         if (supportActionBar != null) {
@@ -76,7 +76,7 @@ class DetailsActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_favorite -> {
-                viewModel.getMovieDetailsObservable().observe(this, Observer<Movie> { movie ->
+                viewModel.movieDetails.observe(this, Observer<Movie> { movie ->
                         if (movie != null) {
                             val favouriteViewModel: FavouriteMoviesViewModel =
                                 ViewModelProvider(this@DetailsActivity)

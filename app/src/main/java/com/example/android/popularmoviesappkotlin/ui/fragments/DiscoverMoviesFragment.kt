@@ -58,10 +58,10 @@ class DiscoverMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProvider(
             this,
-            DiscoverMoviesViewModelFactory(this.activity!!.application, sortBy)
+            DiscoverMoviesViewModelFactory(this.activity!!.application, sortBy, 1)
         ).get(DiscoverMoviesViewModel::class.java)
 
-        viewModel.movieResponseObservable.observe(viewLifecycleOwner, Observer<MovieResponse> { movieResponse ->
+        viewModel.movieResponse.observe(viewLifecycleOwner, Observer<MovieResponse> { movieResponse ->
                 if (movieResponse != null) {
                     val movies = movieResponse.movies
                     if (movies != null && movies.isNotEmpty()) {

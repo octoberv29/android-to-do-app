@@ -14,10 +14,10 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class Repository private constructor(application: Application) {
-    private val retrofitService: MovieApiService
-
+    // Retrofit
+    private val retrofitService: MovieApiService = MovieRetrofit.getInstance()?.create(MovieApiService::class.java)!!
     // Room
-    private val mMovieDao: MovieDao
+    private val mMovieDao: MovieDao = MovieDatabase.getInstance(application).movieDao()
     private val mAllFavouriteMovies: LiveData<List<Movie>>
 
     companion object {
@@ -37,45 +37,48 @@ class Repository private constructor(application: Application) {
     }
 
     init {
-        // for Retrofit
-        retrofitService = MovieRetrofit.getInstance()?.create(MovieApiService::class.java)!!
-
-        // for Room
-        mMovieDao = MovieDatabase.getInstance(application).movieDao()
-        // this should be inside suspend
         mAllFavouriteMovies = mMovieDao.getAll()
     }
 
     // for Retrofit
-    fun getMovies(sortBy: String?, page: Int): LiveData<MovieResponse> {
-        val data = MutableLiveData<MovieResponse>()
-
-        retrofitService.getMovies(sortBy, page).enqueue(object: Callback<MovieResponse> {
-            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
-                data.value = response.body()
-            }
-
-            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
-                //
-            }
-
-        })
+    suspend fun getMovies(sortBy: String?, page: Int): MovieResponse? {
+//        val data = MutableLiveData<MovieResponse>()
+//        retrofitService.getMovies(sortBy, page).enqueue(object: Callback<MovieResponse> {
+//            override fun onResponse(call: Call<MovieResponse>, response: Response<MovieResponse>) {
+//                data.value = response.body()
+//            }
+//
+//            override fun onFailure(call: Call<MovieResponse>, t: Throwable) {
+//                //
+//            }
+//
+//        })
+        var data: MovieResponse? = null
+        try {
+            data = retrofitService.getMovies(sortBy, page)
+        } catch (e: Exception) {
+            // TODO: ???
+        }
         return data
     }
 
-    fun getMovieDetails(id: Int): LiveData<Movie> {
-        val data: MutableLiveData<Movie> = MutableLiveData<Movie>()
-
-        retrofitService.getMovieDetails(id).enqueue(object: Callback<Movie> {
-            override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
-                data.value = response.body()
+    suspend fun getMovieDetails(id: Int): Movie? {
+        var data: Movie? = null
+//        retrofitService.getMovieDetails(id).enqueue(object: Callback<Movie> {
+//            override fun onResponse(call: Call<Movie>, response: Response<Movie>) {
+//                data.value = response.body()
+//            }
+//
+//            override fun onFailure(call: Call<Movie>, t: Throwable) {
+//                //
+//            }
+//
+//        })
+            try {
+                data = retrofitService.getMovieDetails(id)
+            } catch (e: Exception) {
+                // TODO: ???
             }
-
-            override fun onFailure(call: Call<Movie>, t: Throwable) {
-                //
-            }
-
-        })
         return data
     }
 
