@@ -11,10 +11,12 @@ import com.example.android.popularmoviesappkotlin.data.models.Movie
 
 class MovieDetailsViewModel(application: Application, movieId: Long) : AndroidViewModel(application) {
 
+    private val repository: Repository
     private val movieDetailsObservable: LiveData<Movie>
 
     init {
-        movieDetailsObservable = Repository(application).getMovieDetails(movieId)
+        repository = Repository.getInstance(application)!!
+        movieDetailsObservable = repository.getMovieDetails(movieId)
     }
 
     fun getMovieDetailsObservable(): LiveData<Movie> {

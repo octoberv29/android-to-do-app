@@ -13,7 +13,7 @@ class FavouriteMoviesViewModel(application: Application) : AndroidViewModel(appl
     private val allFavouriteMovies: LiveData<List<Movie>>
 
     init {
-        repository = Repository(application)
+        repository = Repository.getInstance(application)!!
         allFavouriteMovies = repository.getAllFavouriteMovies()
     }
 
@@ -21,7 +21,7 @@ class FavouriteMoviesViewModel(application: Application) : AndroidViewModel(appl
         return allFavouriteMovies
     }
 
-    fun insertFavouriteMovie(movie: Movie?) {
+    fun insertFavouriteMovie(movie: Movie) {
         repository.insertFavouriteMovie(movie)
     }
 
@@ -32,6 +32,4 @@ class FavouriteMoviesViewModel(application: Application) : AndroidViewModel(appl
     fun deleteAllFavouriteMovies() {
         repository.deleteAllFavouriteMovies()
     }
-
-
 }

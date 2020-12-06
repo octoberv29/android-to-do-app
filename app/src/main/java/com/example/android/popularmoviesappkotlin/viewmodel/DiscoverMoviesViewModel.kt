@@ -13,7 +13,7 @@ class DiscoverMoviesViewModel(application: Application, sortBy: String) : Androi
     val movieResponseObservable: LiveData<MovieResponse>
 
     init {
-        movieResponseObservable = Repository(application).getMovies(sortBy, 1)
+        movieResponseObservable = Repository.getInstance(application)?.getMovies(sortBy, 1)!!
     }
 
     class DiscoverMoviesViewModelFactory(
