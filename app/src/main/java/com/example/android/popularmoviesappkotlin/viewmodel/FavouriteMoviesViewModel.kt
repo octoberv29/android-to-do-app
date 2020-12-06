@@ -5,13 +5,12 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-class ListViewModel(application: Application) : AndroidViewModel(application) {
+class FavouriteMoviesViewModel(application: Application) : AndroidViewModel(application) {
 
-
-    @Suppress("unchecked_cast")
-    class ListViewModelFactory(private val application: Application): ViewModelProvider.Factory {
+    class MovieViewModelFactory: ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return ListViewModel(application) as T
+            TODO("Not yet implemented")
         }
+
     }
 }

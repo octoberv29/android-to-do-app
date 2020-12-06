@@ -29,7 +29,7 @@
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <ImageView
-                    android:id="@+id/iv_header_poster"
+                    android:id="@+id/ivHeaderPoster"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:fitsSystemWindows="true"
@@ -58,7 +58,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <include
-                android:id="@+id/extra_details"
+                android:id="@+id/extraDetails"
                 layout="@layout/activity_details_content" />
 
         </androidx.core.widget.NestedScrollView>
