@@ -6,22 +6,22 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(entities = [], version = 1)
-abstract class MyDatabase: RoomDatabase() {
+abstract class MovieDatabase: RoomDatabase() {
 
-    abstract val movieDao: MovieDao
+    abstract fun movieDao(): MovieDao
 
     companion object {
 
         @Volatile
-        private var INSTANCE: MyDatabase? = null
+        private var INSTANCE: MovieDatabase? = null
 
-        fun getInstance(context: Context): MyDatabase {
+        fun getInstance(context: Context): MovieDatabase {
             synchronized(this) {
                 var instance = INSTANCE
 
                 if (instance == null) {
                     instance = Room
-                        .databaseBuilder(context.applicationContext, MyDatabase::class.java, "my_db")
+                        .databaseBuilder(context.applicationContext, MovieDatabase::class.java, "my_db")
                         .fallbackToDestructiveMigration()
                         .build()
                 }
