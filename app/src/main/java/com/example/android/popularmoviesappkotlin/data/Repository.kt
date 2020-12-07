@@ -9,6 +9,9 @@ import com.example.android.popularmoviesappkotlin.data.models.Movie
 import com.example.android.popularmoviesappkotlin.data.models.MovieResponse
 import com.example.android.popularmoviesappkotlin.data.network.MovieApiService
 import com.example.android.popularmoviesappkotlin.data.network.MovieRetrofit
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -54,10 +57,8 @@ class Repository private constructor(application: Application) {
 //
 //        })
         var data: MovieResponse? = null
-        try {
+        withContext(IO) {
             data = retrofitService.getMovies(sortBy, page)
-        } catch (e: Exception) {
-            // TODO: ???
         }
         return data
     }
@@ -74,11 +75,9 @@ class Repository private constructor(application: Application) {
 //            }
 //
 //        })
-            try {
-                data = retrofitService.getMovieDetails(id)
-            } catch (e: Exception) {
-                // TODO: ???
-            }
+        withContext(IO) {
+            data = retrofitService.getMovieDetails(id)
+        }
         return data
     }
 
@@ -88,23 +87,47 @@ class Repository private constructor(application: Application) {
         return mAllFavouriteMovies
     }
 
-    suspend fun checkIfFavouriteMovieExistInDb(movieId: Int): Boolean {
-        return mMovieDao.exists(movieId)
+    suspend fun checkIfFavouriteMovieExistInDb(movieId: Int): Boolean? {
+        var check: Boolean? = null
+        withContext(IO) {
+            check = mMovieDao.exists(movieId)
+        }
+        return check
     }
 
     suspend fun getFavouriteMovieById(movieId: Int): Movie? {
-        return mMovieDao.getById(movieId)
+        var movie: Movie? = null
+        withContext(IO) {
+            movie = mMovieDao.getById(movieId)
+        }
+        return movie
     }
 
     suspend fun insertFavouriteMovie(movieToInsert: Movie) {
-        mMovieDao.insert(movieToInsert)
+        withContext(IO) {
+            mMovieDao.insert(movieToInsert)
+        }
     }
 
     suspend fun deleteFavouriteMovieById(idToDelete: Int) {
-        mMovieDao.deleteById(idToDelete)
+        withContext(IO) {
+            mMovieDao.deleteById(idToDelete)
+        }
     }
 
     suspend fun deleteAllFavouriteMovies() {
-        mMovieDao.deleteAll()
+        withContext(IO) {
+            mMovieDao.deleteAll()
+        }
+    }
+
+
+    // for future cache functionality
+    suspend fun refreshMoviesList(sortBy: String?, page: Int) {
+        withContext(IO) {
+            var data: MovieResponse = retrofitService.getMovies(sortBy, page)
+            // replace by insertAll and a different table or somethign else
+//            mMovieDao.insert(data.movies)
+        }
     }
 }

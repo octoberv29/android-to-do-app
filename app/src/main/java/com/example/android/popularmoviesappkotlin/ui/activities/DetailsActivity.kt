@@ -65,6 +65,21 @@ class DetailsActivity : AppCompatActivity() {
                         extraDetails.tvLanguage.text = movie.originalLanguage
                     }
                 })
+
+            viewModel.eventNetworkError.observe(this, Observer<Boolean> { isNetworkError ->
+                if (isNetworkError) onNetworkError()
+            })
+        }
+    }
+
+    private fun onNetworkError() {
+        if(!viewModel.isNetworkErrorShown.value!!) {
+            Toast.makeText(
+                this,
+                "Sorry, Network Error has occurred. Try again later.",
+                Toast.LENGTH_LONG
+            ).show()
+            viewModel.onNetworkErrorShown()
         }
     }
 
@@ -82,14 +97,14 @@ class DetailsActivity : AppCompatActivity() {
                                 ViewModelProvider(this@DetailsActivity)
                                     .get(FavouriteMoviesViewModel::class.java)
 
-                            // TODO: fix unlike in the future
-                            if (!favouriteViewModel.checkIfFavouriteMovieExistInDb(movie.id!!)) {
-                                println("HERE: doesn't exist")
-                                favouriteViewModel.insertFavouriteMovie(movie)
-                            } else {
-                                println("HERE: exists")
-                                favouriteViewModel.deleteFavouriteMovieById(movie.id)
-                            }
+                            // TODO: fix unlike functionality in the future
+//                            if (!favouriteViewModel.checkIfFavouriteMovieExistInDb(movie.id!!)!!) {
+//                                println("HERE: doesn't exist")
+//                                favouriteViewModel.insertFavouriteMovie(movie)
+//                            } else {
+//                                println("HERE: exists")
+//                                favouriteViewModel.deleteFavouriteMovieById(movie.id)
+//                            }
                         }
                     })
                 true

@@ -18,8 +18,8 @@ class FavouriteMoviesViewModel(application: Application) : AndroidViewModel(appl
         return allFavouriteMovies
     }
 
-    fun checkIfFavouriteMovieExistInDb(movieId: Int): Boolean {
-        var check = false
+    fun checkIfFavouriteMovieExistInDb(movieId: Int): Boolean? {
+        var check: Boolean? = null
         viewModelScope.launch {
             check = repository.checkIfFavouriteMovieExistInDb(movieId)
         }
