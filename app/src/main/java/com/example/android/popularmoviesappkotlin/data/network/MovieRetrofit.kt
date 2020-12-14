@@ -14,9 +14,23 @@ class MovieRetrofit {
         fun getInstance(): Retrofit? {
             if (INSTANCE == null) {
 
+                val authInterceptor = Interceptor { chain ->
+
+                    val url: HttpUrl = chain.request().url.newBuilder()
+                        .addQueryParameter("api_key", "9321c4fc5f95b92bce700096da663cde")
+                        .build()
+
+                    val request: Request = chain.request().newBuilder()
+//                        .addHeader("Authorization", "9321c4fc5f95b92bce700096da663cde")
+                        .url(url)
+                        .build()
+
+                    chain.proceed(request)
+                }
+
                 val client: OkHttpClient = OkHttpClient.Builder()
                     .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BASIC))
-                    .addInterceptor(AuthInterceptor())
+                    .addInterceptor(authInterceptor)
                     .build()
 
                 val retrofit = Retrofit.Builder()
@@ -30,15 +44,5 @@ class MovieRetrofit {
             return INSTANCE
         }
 
-        class AuthInterceptor : Interceptor {
-            override fun intercept(chain: Interceptor.Chain): Response {
-                var request: Request = chain.request()
-                val url: HttpUrl = request.url.newBuilder()
-                    .addQueryParameter("api_key", "9321c4fc5f95b92bce700096da663cde")
-                    .build()
-                request = request.newBuilder().url(url).build()
-                return chain.proceed(request)
-            }
-        }
     }
 }

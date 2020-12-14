@@ -97,14 +97,7 @@ class DetailsActivity : AppCompatActivity() {
                                 ViewModelProvider(this@DetailsActivity)
                                     .get(FavouriteMoviesViewModel::class.java)
 
-                            // TODO: fix unlike functionality in the future
-//                            if (!favouriteViewModel.checkIfFavouriteMovieExistInDb(movie.id!!)!!) {
-//                                println("HERE: doesn't exist")
-//                                favouriteViewModel.insertFavouriteMovie(movie)
-//                            } else {
-//                                println("HERE: exists")
-//                                favouriteViewModel.deleteFavouriteMovieById(movie.id)
-//                            }
+                            favouriteViewModel.insertFavouriteMovie(movie)
                         }
                     })
                 true

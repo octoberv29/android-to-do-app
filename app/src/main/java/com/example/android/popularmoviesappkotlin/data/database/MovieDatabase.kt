@@ -22,7 +22,7 @@ abstract class MovieDatabase: RoomDatabase() {
 
                 if (instance == null) {
                     instance = Room
-                        .databaseBuilder(context.applicationContext, MovieDatabase::class.java, "my_db")
+                        .databaseBuilder(context.applicationContext, MovieDatabase::class.java, "movie_db")
                         .fallbackToDestructiveMigration()
                         .build()
                 }
