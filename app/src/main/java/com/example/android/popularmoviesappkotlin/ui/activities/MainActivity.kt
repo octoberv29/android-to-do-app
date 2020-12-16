@@ -5,8 +5,8 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.example.android.popularmoviesappkotlin.R
-import com.example.android.popularmoviesappkotlin.ui.fragments.DiscoverMoviesFragment
-import com.example.android.popularmoviesappkotlin.ui.fragments.FavouriteMoviesFragment
+import com.example.android.popularmoviesappkotlin.ui.fragments.DiscoverFragment
+import com.example.android.popularmoviesappkotlin.ui.fragments.FavouriteFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -34,14 +34,14 @@ class MainActivity : AppCompatActivity() {
     private fun replaceByDiscoverMoviesFragment(sortBy: String) {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragmentContainer, DiscoverMoviesFragment.newInstance(sortBy))
+            .replace(R.id.fragmentContainer, DiscoverFragment.newInstance(sortBy))
             .commit()
     }
 
     private fun replaceByFavouriteMoviesFragment() {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragmentContainer, FavouriteMoviesFragment())
+            .replace(R.id.fragmentContainer, FavouriteFragment())
             .commit()
     }
 

@@ -1,17 +1,18 @@
 package com.example.android.popularmoviesappkotlin.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.android.popularmoviesappkotlin.data.Repository
 import com.example.android.popularmoviesappkotlin.data.models.Movie
 import kotlinx.coroutines.launch
 
 
-class FavouriteMoviesViewModel(application: Application) : AndroidViewModel(application) {
+class FavouriteViewModel(
+    application: Application,
+    private val repository: Repository
+) : AndroidViewModel(application) {
 
-    private val repository: Repository = Repository.getInstance(application)
+    //    private val repository: Repository = Repository.getInstance(application)
     private val allFavouriteMovies: LiveData<List<Movie>> = repository.getAllFavouriteMovies()
 
     fun getAllFavouriteMovies(): LiveData<List<Movie>> {
@@ -49,6 +50,15 @@ class FavouriteMoviesViewModel(application: Application) : AndroidViewModel(appl
     fun deleteAllFavouriteMovies() {
         viewModelScope.launch {
             repository.deleteAllFavouriteMovies()
+        }
+    }
+
+    class FavouriteViewModelFactory(
+        private val application: Application,
+        private val repository: Repository,
+    ) : ViewModelProvider.Factory {
+        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            return FavouriteViewModel(application, repository) as T
         }
     }
 }

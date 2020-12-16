@@ -11,15 +11,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.android.popularmoviesappkotlin.R
+import com.example.android.popularmoviesappkotlin.data.Repository
+import com.example.android.popularmoviesappkotlin.data.database.MovieDao
+import com.example.android.popularmoviesappkotlin.data.database.MovieDatabase
 import com.example.android.popularmoviesappkotlin.data.models.MovieResponse
+import com.example.android.popularmoviesappkotlin.data.network.MovieApiService
+import com.example.android.popularmoviesappkotlin.data.network.MovieRetrofit
 import com.example.android.popularmoviesappkotlin.ui.activities.DetailsActivity
 import com.example.android.popularmoviesappkotlin.ui.adapters.MovieAdapter
-import com.example.android.popularmoviesappkotlin.viewmodel.DiscoverMoviesViewModel
-import com.example.android.popularmoviesappkotlin.viewmodel.DiscoverMoviesViewModel.*
+import com.example.android.popularmoviesappkotlin.viewmodel.DiscoverViewModel
+import com.example.android.popularmoviesappkotlin.viewmodel.DiscoverViewModel.*
 import kotlinx.android.synthetic.main.fragment_movies_list.*
 
 
-class DiscoverMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
+class DiscoverFragment : Fragment(), MovieAdapter.OnMovieClickListener {
 
     private val NUMBER_OF_COLUMNS = 3
     val INTENT_EXTRA_MOVIE_ID = "MOVIE_ID"
@@ -27,11 +32,11 @@ class DiscoverMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
     private lateinit var sortBy: String
     private lateinit var mMovieAdapter: MovieAdapter
 
-    private lateinit var viewModel: DiscoverMoviesViewModel
+    private lateinit var viewModel: DiscoverViewModel
 
     companion object {
-        fun newInstance(sortBy: String): DiscoverMoviesFragment {
-            val fragment = DiscoverMoviesFragment()
+        fun newInstance(sortBy: String): DiscoverFragment {
+            val fragment = DiscoverFragment()
             val args = Bundle()
             args.putString("sortBy", sortBy)
             fragment.arguments = args
@@ -44,7 +49,11 @@ class DiscoverMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
         sortBy = if (arguments != null) arguments!!.getString("sortBy", "") else "popularity.desc"
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_movies_list, container, false)
     }
 
@@ -57,10 +66,14 @@ class DiscoverMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(
-            this,
-            DiscoverMoviesViewModelFactory(this.activity!!.application, sortBy, 1)
-        ).get(DiscoverMoviesViewModel::class.java)
+
+        val application = activity!!.application
+        val retrofitService = MovieRetrofit.getInstance()?.create(MovieApiService::class.java)!!
+        val movieDao: MovieDao = MovieDatabase.getInstance(application).movieDao()
+        val repository: Repository = Repository.getInstance(retrofitService, movieDao)
+
+        viewModel = ViewModelProvider(this, DiscoverViewModelFactory(application, repository, sortBy, 1))
+            .get(DiscoverViewModel::class.java)
 
         viewModel.movieResponse.observe(viewLifecycleOwner, Observer<MovieResponse> { movieResponse ->
                 if (movieResponse != null) {
@@ -72,17 +85,13 @@ class DiscoverMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
             })
 
         viewModel.eventNetworkError.observe(viewLifecycleOwner, Observer<Boolean> { isNetworkError ->
-            if (isNetworkError) onNetworkError()
-        })
+                if (isNetworkError) onNetworkError()
+            })
     }
 
     private fun onNetworkError() {
-        if(!viewModel.isNetworkErrorShown.value!!) {
-            Toast.makeText(
-                activity,
-                "Sorry, Network Error has occurred. Try again later.",
-                Toast.LENGTH_LONG
-            ).show()
+        if (!viewModel.isNetworkErrorShown.value!!) {
+            Toast.makeText(activity, R.string.error_network, Toast.LENGTH_LONG).show()
             viewModel.onNetworkErrorShown()
         }
     }

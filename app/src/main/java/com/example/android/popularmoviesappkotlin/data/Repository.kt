@@ -2,36 +2,32 @@ package com.example.android.popularmoviesappkotlin.data
 
 import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.android.popularmoviesappkotlin.data.database.MovieDao
-import com.example.android.popularmoviesappkotlin.data.database.MovieDatabase
 import com.example.android.popularmoviesappkotlin.data.models.Movie
 import com.example.android.popularmoviesappkotlin.data.models.MovieResponse
 import com.example.android.popularmoviesappkotlin.data.network.MovieApiService
-import com.example.android.popularmoviesappkotlin.data.network.MovieRetrofit
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
-class Repository private constructor(application: Application) {
+class Repository private constructor(
+    private val retrofitService: MovieApiService,
+    private val movieDao: MovieDao
+) {
     // Retrofit
-    private val retrofitService: MovieApiService = MovieRetrofit.getInstance()?.create(MovieApiService::class.java)!!
+//    private val retrofitService = MovieRetrofit.getInstance()?.create(MovieApiService::class.java)!!
     // Room
-    private val mMovieDao: MovieDao = MovieDatabase.getInstance(application).movieDao()
+//    private val movieDao: MovieDao = MovieDatabase.getInstance(application).movieDao()
     private val mAllFavouriteMovies: LiveData<List<Movie>>
 
     companion object {
         @Volatile
         private var INSTANCE: Repository? = null
 
-        fun getInstance(application: Application): Repository {
+        fun getInstance(retrofitService: MovieApiService, movieDao: MovieDao): Repository {
             synchronized(this) {
                 var instance = INSTANCE
                 if (instance == null) {
-                    instance = Repository(application)
+                    instance = Repository(retrofitService, movieDao)
                 }
                 INSTANCE = instance
                 return instance
@@ -40,7 +36,7 @@ class Repository private constructor(application: Application) {
     }
 
     init {
-        mAllFavouriteMovies = mMovieDao.getAll()
+        mAllFavouriteMovies = movieDao.getAll()
     }
 
     suspend fun getMovies(sortBy: String?, page: Int): MovieResponse = withContext(IO) {
@@ -57,30 +53,30 @@ class Repository private constructor(application: Application) {
     }
 
     suspend fun checkIfFavouriteMovieExistInDb(movieId: Int): Boolean = withContext(IO) {
-        mMovieDao.exists(movieId)
+        movieDao.exists(movieId)
     }
 
     suspend fun getFavouriteMovieById(movieId: Int): Movie? = withContext(IO) {
-        mMovieDao.getById(movieId)
+        movieDao.getById(movieId)
     }
 
     suspend fun insertFavouriteMovie(movieToInsert: Movie) = withContext(IO) {
-        mMovieDao.insert(movieToInsert)
+        movieDao.insert(movieToInsert)
     }
 
     suspend fun deleteFavouriteMovieById(idToDelete: Int) = withContext(IO) {
-        mMovieDao.deleteById(idToDelete)
+        movieDao.deleteById(idToDelete)
     }
 
     suspend fun deleteAllFavouriteMovies() = withContext(IO) {
-        mMovieDao.deleteAll()
+        movieDao.deleteAll()
     }
 
 
     // for future cache functionality
     suspend fun refreshMoviesList(sortBy: String?, page: Int) = withContext(IO) {
         var data: MovieResponse = retrofitService.getMovies(sortBy, page)
-        // replace by insertAll and a different table or somethign else
+        // replace by insertAll and a different table or something else
 //            mMovieDao.insert(data.movies)
     }
 }

@@ -8,9 +8,13 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 
-class MovieDetailsViewModel(application: Application, movieId: Int) : AndroidViewModel(application) {
+class DetailsViewModel(
+    application: Application,
+    private val repository: Repository,
+    movieId: Int
+) : AndroidViewModel(application) {
 
-    private val repository: Repository = Repository.getInstance(application)
+//    private val repository: Repository = Repository.getInstance(application)
 
     private val _movieDetails = MutableLiveData<Movie>()
     val movieDetails: LiveData<Movie>
@@ -45,10 +49,14 @@ class MovieDetailsViewModel(application: Application, movieId: Int) : AndroidVie
         _isNetworkErrorShown.value = true
     }
 
-    class MovieDetailsViewModelFactory(private val application: Application, private val id: Int) :
+    class DetailsViewModelFactory(
+        private val application: Application,
+        private val repository: Repository,
+        private val id: Int
+    ) :
         ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return MovieDetailsViewModel(application, id) as T
+            return DetailsViewModel(application, repository, id) as T
         }
     }
 

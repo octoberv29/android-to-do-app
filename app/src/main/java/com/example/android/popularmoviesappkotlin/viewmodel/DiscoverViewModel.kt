@@ -8,9 +8,14 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 
-class DiscoverMoviesViewModel(application: Application, sortBy: String, page: Int) : AndroidViewModel(application) {
+class DiscoverViewModel(
+    application: Application,
+    private val repository: Repository,
+    sortBy: String,
+    page: Int
+) : AndroidViewModel(application) {
 
-    private val repository: Repository = Repository.getInstance(application)
+//     = Repository.getInstance(application)
 
     private val _movieResponse = MutableLiveData<MovieResponse>()
     val movieResponse: LiveData<MovieResponse>
@@ -45,11 +50,14 @@ class DiscoverMoviesViewModel(application: Application, sortBy: String, page: In
         _isNetworkErrorShown.value = true
     }
 
-    class DiscoverMoviesViewModelFactory(private val application: Application, private val sortBy: String, private val page: Int) : ViewModelProvider.Factory {
+    class DiscoverViewModelFactory(
+        private val application: Application,
+        private val repository: Repository,
+        private val sortBy: String,
+        private val page: Int
+    ) : ViewModelProvider.Factory {
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return DiscoverMoviesViewModel(application, sortBy, page) as T
+            return DiscoverViewModel(application, repository, sortBy, page) as T
         }
     }
-
-
 }

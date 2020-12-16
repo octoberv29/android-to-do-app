@@ -9,12 +9,18 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.android.popularmoviesappkotlin.R
+import com.example.android.popularmoviesappkotlin.data.Repository
+import com.example.android.popularmoviesappkotlin.data.database.MovieDao
+import com.example.android.popularmoviesappkotlin.data.database.MovieDatabase
 import com.example.android.popularmoviesappkotlin.data.models.Movie
-import com.example.android.popularmoviesappkotlin.ui.fragments.FavouriteMoviesFragment.Companion.INTENT_EXTRA_MOVIE_ID
+import com.example.android.popularmoviesappkotlin.data.network.MovieApiService
+import com.example.android.popularmoviesappkotlin.data.network.MovieRetrofit
+import com.example.android.popularmoviesappkotlin.ui.fragments.FavouriteFragment.Companion.INTENT_EXTRA_MOVIE_ID
 import com.example.android.popularmoviesappkotlin.utils.Constants
-import com.example.android.popularmoviesappkotlin.viewmodel.FavouriteMoviesViewModel
-import com.example.android.popularmoviesappkotlin.viewmodel.MovieDetailsViewModel
-import com.example.android.popularmoviesappkotlin.viewmodel.MovieDetailsViewModel.*
+import com.example.android.popularmoviesappkotlin.viewmodel.FavouriteViewModel
+import com.example.android.popularmoviesappkotlin.viewmodel.DetailsViewModel
+import com.example.android.popularmoviesappkotlin.viewmodel.DetailsViewModel.*
+import com.example.android.popularmoviesappkotlin.viewmodel.FavouriteViewModel.FavouriteViewModelFactory
 import kotlinx.android.synthetic.main.activity_details.*
 import kotlinx.android.synthetic.main.activity_details_content.view.*
 
@@ -22,7 +28,7 @@ import kotlinx.android.synthetic.main.activity_details_content.view.*
 class DetailsActivity : AppCompatActivity() {
     private var movieId: Int = 0
 
-    private lateinit var viewModel: MovieDetailsViewModel
+    private lateinit var viewModel: DetailsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,14 +40,19 @@ class DetailsActivity : AppCompatActivity() {
             movieId = intent.getIntExtra(INTENT_EXTRA_MOVIE_ID, -1)
 
             if (movieId == -1) {
-                Toast.makeText(this, getString(R.string.error_general), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_general), Toast.LENGTH_SHORT)
+                    .show()
                 onBackPressed()
             }
 
+            val retrofitService = MovieRetrofit.getInstance()?.create(MovieApiService::class.java)!!
+            val movieDao: MovieDao = MovieDatabase.getInstance(application).movieDao()
+            val repository: Repository = Repository.getInstance(retrofitService, movieDao)
+
             viewModel = ViewModelProvider(
                 this,
-                MovieDetailsViewModelFactory(this.application, movieId)
-            ).get(MovieDetailsViewModel::class.java)
+                DetailsViewModelFactory(this.application, repository, movieId)
+            ).get(DetailsViewModel::class.java)
 
             viewModel.movieDetails.observe(this,
                 Observer<Movie> { movie ->
@@ -71,7 +82,7 @@ class DetailsActivity : AppCompatActivity() {
     }
 
     private fun onNetworkError() {
-        if(!viewModel.isNetworkErrorShown.value!!) {
+        if (!viewModel.isNetworkErrorShown.value!!) {
             Toast.makeText(
                 this,
                 getString(R.string.error_network),
@@ -90,14 +101,21 @@ class DetailsActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.action_favorite -> {
                 viewModel.movieDetails.observe(this, Observer<Movie> { movie ->
-                        if (movie != null) {
-                            val favouriteViewModel: FavouriteMoviesViewModel =
-                                ViewModelProvider(this@DetailsActivity)
-                                    .get(FavouriteMoviesViewModel::class.java)
+                    if (movie != null) {
+                        val retrofitService =
+                            MovieRetrofit.getInstance()?.create(MovieApiService::class.java)!!
+                        val movieDao: MovieDao = MovieDatabase.getInstance(application).movieDao()
+                        val repository: Repository =
+                            Repository.getInstance(retrofitService, movieDao)
 
-                            favouriteViewModel.insertFavouriteMovie(movie)
-                        }
-                    })
+                        val favouriteViewModel: FavouriteViewModel = ViewModelProvider(
+                                this@DetailsActivity,
+                                FavouriteViewModelFactory(application, repository)
+                            ).get(FavouriteViewModel::class.java)
+
+                        favouriteViewModel.insertFavouriteMovie(movie)
+                    }
+                })
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -10,16 +10,22 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.android.popularmoviesappkotlin.R
+import com.example.android.popularmoviesappkotlin.data.Repository
+import com.example.android.popularmoviesappkotlin.data.database.MovieDao
+import com.example.android.popularmoviesappkotlin.data.database.MovieDatabase
 import com.example.android.popularmoviesappkotlin.data.models.Movie
+import com.example.android.popularmoviesappkotlin.data.network.MovieApiService
+import com.example.android.popularmoviesappkotlin.data.network.MovieRetrofit
 import com.example.android.popularmoviesappkotlin.ui.activities.DetailsActivity
 import com.example.android.popularmoviesappkotlin.ui.adapters.MovieAdapter
-import com.example.android.popularmoviesappkotlin.viewmodel.FavouriteMoviesViewModel
+import com.example.android.popularmoviesappkotlin.viewmodel.FavouriteViewModel
+import com.example.android.popularmoviesappkotlin.viewmodel.FavouriteViewModel.FavouriteViewModelFactory
 import kotlinx.android.synthetic.main.fragment_movies_list.*
 
-class FavouriteMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
+class FavouriteFragment : Fragment(), MovieAdapter.OnMovieClickListener {
 
     private lateinit var mFavourtieMovieAdapter: MovieAdapter
-    private lateinit var viewModel: FavouriteMoviesViewModel
+    private lateinit var viewModel: FavouriteViewModel
 
     companion object {
         private const val NUMBER_OF_COLUMNS = 3
@@ -39,8 +45,13 @@ class FavouriteMoviesFragment : Fragment(), MovieAdapter.OnMovieClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        // this way ViewModel will be destroyed when Fragment is finished
-        viewModel = ViewModelProvider(this).get(FavouriteMoviesViewModel::class.java)
+
+        val application = activity!!.application
+        val retrofitService = MovieRetrofit.getInstance()?.create(MovieApiService::class.java)!!
+        val movieDao: MovieDao = MovieDatabase.getInstance(application).movieDao()
+        val repository: Repository = Repository.getInstance(retrofitService, movieDao)
+
+        viewModel = ViewModelProvider(this , FavouriteViewModelFactory(application, repository)).get(FavouriteViewModel::class.java)
         viewModel.getAllFavouriteMovies().observe(viewLifecycleOwner, Observer<List<Movie>> { movies ->
                 if (movies != null && movies.isNotEmpty()) {
                     mFavourtieMovieAdapter.movies = movies
