@@ -1,6 +1,5 @@
 package com.example.android.popularmoviesappkotlin.ui.activities
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -25,7 +24,6 @@ class DetailsActivity : AppCompatActivity() {
 
     private lateinit var viewModel: MovieDetailsViewModel
 
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
@@ -36,7 +34,7 @@ class DetailsActivity : AppCompatActivity() {
             movieId = intent.getIntExtra(INTENT_EXTRA_MOVIE_ID, -1)
 
             if (movieId == -1) {
-                Toast.makeText(this, "Sorry, error has occurred!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.error_general), Toast.LENGTH_SHORT).show()
                 onBackPressed()
             }
 
@@ -50,7 +48,7 @@ class DetailsActivity : AppCompatActivity() {
                     if (movie != null) {
                         if (supportActionBar != null) {
                             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-                            supportActionBar!!.title = movie.title // TODO: originalTitle?
+                            supportActionBar!!.title = movie.title
                         }
                         Glide.with(this)
                             .load(Constants.BACKDROP_URL + movie.backdropPath)
@@ -58,7 +56,7 @@ class DetailsActivity : AppCompatActivity() {
                         Glide.with(this)
                             .load(Constants.IMAGE_URL + movie.posterPath)
                             .into(extraDetails.ivPoster)
-                        extraDetails.tvOriginalTitle.text = movie.title  // TODO: originalTitle?
+                        extraDetails.tvOriginalTitle.text = movie.title
                         extraDetails.tvReleaseDate.text = movie.releaseDate
                         extraDetails.tvVoteAverage.text = movie.voteAverage.toString() + "/10"
                         extraDetails.tvOverview.text = movie.overview
@@ -76,7 +74,7 @@ class DetailsActivity : AppCompatActivity() {
         if(!viewModel.isNetworkErrorShown.value!!) {
             Toast.makeText(
                 this,
-                "Sorry, Network Error has occurred. Try again later.",
+                getString(R.string.error_network),
                 Toast.LENGTH_LONG
             ).show()
             viewModel.onNetworkErrorShown()

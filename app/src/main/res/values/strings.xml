@@ -5,5 +5,7 @@
     <string name="action_sort_by">Sort by</string>
     <string name="action_popular_movies">Popular</string>
     <string name="action_top_rated">Top Rated</string>
+    <string name="error_network">Sorry, Network Error has occurred. Try again later.</string>
+    <string name="error_general">Sorry, error has occurred!</string>
 
 </resources>
