@@ -101,5 +101,10 @@ class DiscoverFragment : Fragment(), MovieAdapter.OnMovieClickListener {
         val intent = Intent(activity, DetailsActivity::class.java)
         intent.putExtra(INTENT_EXTRA_MOVIE_ID, movieId)
         startActivity(intent)
+//        val fragment: DetailsFragment = DetailsFragment.newInstance(movieId)
+//        activity!!.supportFragmentManager.beginTransaction()
+//            .replace(R.id.fragmentContainer, fragment)
+//            .addToBackStack(null)
+//            .commit()
     }
 }

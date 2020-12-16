@@ -83,11 +83,7 @@ class DetailsActivity : AppCompatActivity() {
 
     private fun onNetworkError() {
         if (!viewModel.isNetworkErrorShown.value!!) {
-            Toast.makeText(
-                this,
-                getString(R.string.error_network),
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(this, getString(R.string.error_network), Toast.LENGTH_LONG).show()
             viewModel.onNetworkErrorShown()
         }
     }
